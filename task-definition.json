@@ -1,0 +1,22 @@
+{
+    "family": "reelquotes-subtitle-api",
+    "networkMode": "awsvpc",
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "256",
+    "memory": "512",
+    "containerDefinitions": [
+        {
+            "name": "SubtitleApiContainer",
+            "image": "placeholder",
+            "portMappings": [
+                {
+                    "containerPort": 3001,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true
+        }
+    ]
+} 
