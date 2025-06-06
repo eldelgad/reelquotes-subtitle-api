@@ -98,6 +98,6 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: task-definition.json
-          service: SubtitleApiService
+          service: reelquotes-subtitle-api
           cluster: ReelQuotesCluster
           wait-for-service-stability: true
