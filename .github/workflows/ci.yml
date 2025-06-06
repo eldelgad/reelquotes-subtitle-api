@@ -60,18 +60,44 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      - name: Render Amazon ECS task definition
-        id: render-task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: task-definition.json
-          container-name: SubtitleApiContainer
-          image: ${{ steps.build-image.outputs.image }}
+      - name: Create task-definition.json
+        run: |
+          cat > task-definition.json <<EOF
+          {
+              "family": "reelquotes-subtitle-api",
+              "networkMode": "awsvpc",
+              "requiresCompatibilities": ["FARGATE"],
+              "cpu": "256",
+              "memory": "512",
+              "executionRoleArn": "${{ secrets.AWS_EXECUTION_ROLE_ARN }}",
+              "containerDefinitions": [
+                  {
+                      "name": "SubtitleApiContainer",
+                      "image": "${{ steps.build-image.outputs.image }}",
+                      "portMappings": [
+                          {
+                              "containerPort": 3001,
+                              "protocol": "tcp"
+                          }
+                      ],
+                      "essential": true,
+                      "logConfiguration": {
+                          "logDriver": "awslogs",
+                          "options": {
+                              "awslogs-group": "/ecs/reelquotes-subtitle-api",
+                              "awslogs-region": "us-east-1",
+                              "awslogs-stream-prefix": "ecs"
+                          }
+                      }
+                  }
+              ]
+          }
+          EOF
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          task-definition: ${{ steps.render-task-def.outputs.task-definition }}
+          task-definition: task-definition.json
           service: SubtitleApiService
           cluster: ReelQuotesCluster
           wait-for-service-stability: true
