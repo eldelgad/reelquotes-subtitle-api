@@ -1,3 +1,32 @@
+# ReelQuotes Subtitle API
+
+## Overview
+This is the subtitle acquisition and processing API for the ReelQuotes project.
+
+<!-- Test deployment with updated AWS_EXECUTION_ROLE_ARN secret -->
+
+## Development
+
+To run locally:
+```bash
+npm run start:dev
+```
+
+## Testing
+
+```bash
+npm test
+npm run lint
+```
+
+## Docker
+
+Build and run with Docker:
+```bash
+docker build -t reelquotes-subtitle-api .
+docker run -p 3001:3001 reelquotes-subtitle-api
+```
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
